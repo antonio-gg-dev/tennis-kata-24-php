@@ -19,7 +19,7 @@ class TennisGame3 implements TennisGame
 
     public function getScore(): string
     {
-        if ($this->normalGame() && $this->notAdvantege()) {
+        if ($this->normalGame() && $this->notAdvantage()) {
             $scorePlayerOne = self::SCORING_SYSTEM[$this->playerOneScore];
             $scorePlayerTwo = self::SCORING_SYSTEM[$this->playerTwoScore];
             return ($this->isDeuce()) ? "{$scorePlayerOne}-All" : "{$scorePlayerOne}-{$scorePlayerTwo}";
@@ -29,8 +29,8 @@ class TennisGame3 implements TennisGame
         }
         $winnerPlayer = $this->winningPlayer();
         return (
-            ($this->playerOneScore - $this->playerTwoScore) * ($this->playerOneScore - $this->playerTwoScore) === 1) ?
-            "Advantage {$winnerPlayer}" : "Win for {$winnerPlayer}";
+            $this->hasAdvantageOfOne() ?
+            "Advantage {$winnerPlayer}" : "Win for {$winnerPlayer}");
     }
 
     public function wonPoint(string $playerName): void
@@ -61,7 +61,7 @@ class TennisGame3 implements TennisGame
     /**
      * @return bool
      */
-    public function notAdvantege(): bool
+    public function notAdvantage(): bool
     {
         return !($this->playerOneScore + $this->playerTwoScore === 6);
     }
@@ -72,5 +72,10 @@ class TennisGame3 implements TennisGame
     public function winningPlayer(): string
     {
         return $this->playerOneScore > $this->playerTwoScore ? $this->playerOneName : $this->playerTwoName;
+    }
+
+    public function hasAdvantageOfOne(): bool
+    {
+        return abs($this->playerOneScore - $this->playerTwoScore) === 1;
     }
 }
