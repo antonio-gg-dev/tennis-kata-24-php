@@ -20,6 +20,25 @@ class TennisGame3Test extends TestMaster
         $this->game = new TennisGame3('player1', 'player2');
     }
 
+    public function test_rafa_nadal_can_wins(): void
+    {
+        $playerOneName = 'Rafa Nadal';
+        $this->game = new TennisGame3($playerOneName, 'Antonio Federer');
+        $this->game->wonPoint($playerOneName);
+
+        $this->assertSame("Fifteen-Love", $this->game->getScore());
+    }
+
+    public function test_ball_boys_cannot_wins(): void
+    {
+        $playerOneName = 'Rafa Nadal';
+        $ballBoys = 'Little Timmy';
+        $this->game = new TennisGame3($playerOneName, 'Antonio Federer');
+        $this->game->wonPoint($ballBoys);
+
+        $this->assertSame("Love-All", $this->game->getScore());
+    }
+
     /**
      * @dataProvider data
      */

@@ -8,8 +8,8 @@ class TennisGame3 implements TennisGame
 {
     private const SCORING_SYSTEM = ['Love', 'Fifteen', 'Thirty', 'Forty'];
     private const DEUCE = 'Deuce';
-    private const ALL = "All";
-    const SCORE_FORMAT = '%s-%s';
+    private const ALL = 'All';
+    private const SCORE_FORMAT = '%s-%s';
 
     private int $playerOneScore = 0;
     private int $playerTwoScore = 0;
@@ -46,9 +46,11 @@ class TennisGame3 implements TennisGame
 
     public function wonPoint(string $playerName): void
     {
-        if ($playerName === 'player1') {
+        if ($playerName === $this->playerOneName) {
             $this->playerOneScore++;
-        } else {
+        }
+
+        if ($playerName === $this->playerTwoName) {
             $this->playerTwoScore++;
         }
     }
