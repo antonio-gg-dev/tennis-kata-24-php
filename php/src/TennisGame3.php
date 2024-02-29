@@ -6,36 +6,37 @@ namespace TennisGame;
 
 class TennisGame3 implements TennisGame
 {
-    private int $p2 = 0;
+    const SCORING_SYSTEM = ['Love', 'Fifteen', 'Thirty', 'Forty'];
+    private int $playerTwoScore = 0;
 
-    private int $p1 = 0;
+    private int $playerOneScore = 0;
 
     public function __construct(
-        private string $p1N,
-        private string $p2N
+        private string $playerOneName,
+        private string $playerTwoName
     ) {
     }
 
     public function getScore(): string
     {
-        if ($this->p1 < 4 && $this->p2 < 4 && ! ($this->p1 + $this->p2 === 6)) {
-            $p = ['Love', 'Fifteen', 'Thirty', 'Forty'];
-            $s = $p[$this->p1];
-            return ($this->p1 === $this->p2) ? "{$s}-All" : "{$s}-{$p[$this->p2]}";
+        if ($this->playerOneScore < 4 && $this->playerTwoScore < 4 && ! ($this->playerOneScore + $this->playerTwoScore === 6)) {
+            $p = self::SCORING_SYSTEM;
+            $s = $p[$this->playerOneScore];
+            return ($this->playerOneScore === $this->playerTwoScore) ? "{$s}-All" : "{$s}-{$p[$this->playerTwoScore]}";
         }
-        if ($this->p1 === $this->p2) {
+        if ($this->playerOneScore === $this->playerTwoScore) {
             return 'Deuce';
         }
-        $s = $this->p1 > $this->p2 ? $this->p1N : $this->p2N;
-        return (($this->p1 - $this->p2) * ($this->p1 - $this->p2) === 1) ? "Advantage {$s}" : "Win for {$s}";
+        $s = $this->playerOneScore > $this->playerTwoScore ? $this->playerOneName : $this->playerTwoName;
+        return (($this->playerOneScore - $this->playerTwoScore) * ($this->playerOneScore - $this->playerTwoScore) === 1) ? "Advantage {$s}" : "Win for {$s}";
     }
 
     public function wonPoint(string $playerName): void
     {
         if ($playerName === 'player1') {
-            $this->p1++;
+            $this->playerOneScore++;
         } else {
-            $this->p2++;
+            $this->playerTwoScore++;
         }
     }
 }
