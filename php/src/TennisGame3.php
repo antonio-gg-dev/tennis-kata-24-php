@@ -19,16 +19,18 @@ class TennisGame3 implements TennisGame
 
     public function getScore(): string
     {
-        if ($this->playerOneScore < 4 && $this->playerTwoScore < 4 && ! ($this->playerOneScore + $this->playerTwoScore === 6)) {
-            $p = self::SCORING_SYSTEM;
-            $s = $p[$this->playerOneScore];
-            return ($this->playerOneScore === $this->playerTwoScore) ? "{$s}-All" : "{$s}-{$p[$this->playerTwoScore]}";
+        if ($this->normalGame() && $this->notAdvantege()) {
+            $scorePlayerOne = self::SCORING_SYSTEM[$this->playerOneScore];
+            $scorePlayerTwo = self::SCORING_SYSTEM[$this->playerTwoScore];
+            return ($this->isDeuce()) ? "{$scorePlayerOne}-All" : "{$scorePlayerOne}-{$scorePlayerTwo}";
         }
-        if ($this->playerOneScore === $this->playerTwoScore) {
+        if ($this->isDeuce()) {
             return 'Deuce';
         }
-        $s = $this->playerOneScore > $this->playerTwoScore ? $this->playerOneName : $this->playerTwoName;
-        return (($this->playerOneScore - $this->playerTwoScore) * ($this->playerOneScore - $this->playerTwoScore) === 1) ? "Advantage {$s}" : "Win for {$s}";
+        $winnerPlayer = $this->winningPlayer();
+        return (
+            ($this->playerOneScore - $this->playerTwoScore) * ($this->playerOneScore - $this->playerTwoScore) === 1) ?
+            "Advantage {$winnerPlayer}" : "Win for {$winnerPlayer}";
     }
 
     public function wonPoint(string $playerName): void
@@ -38,5 +40,37 @@ class TennisGame3 implements TennisGame
         } else {
             $this->playerTwoScore++;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeuce(): bool
+    {
+        return $this->playerOneScore === $this->playerTwoScore;
+    }
+
+    /**
+     * @return bool
+     */
+    public function normalGame(): bool
+    {
+        return $this->playerOneScore < 4 && $this->playerTwoScore < 4;
+    }
+
+    /**
+     * @return bool
+     */
+    public function notAdvantege(): bool
+    {
+        return !($this->playerOneScore + $this->playerTwoScore === 6);
+    }
+
+    /**
+     * @return string
+     */
+    public function winningPlayer(): string
+    {
+        return $this->playerOneScore > $this->playerTwoScore ? $this->playerOneName : $this->playerTwoName;
     }
 }
