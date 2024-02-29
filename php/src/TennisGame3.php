@@ -10,6 +10,7 @@ class TennisGame3 implements TennisGame
     private const DEUCE = 'Deuce';
     private const ALL = 'All';
     private const SCORE_FORMAT = '%s-%s';
+    const ADVANTAGE_LIMIT = 6;
 
     private int $playerOneScore = 0;
     private int $playerTwoScore = 0;
@@ -22,7 +23,7 @@ class TennisGame3 implements TennisGame
 
     public function getScore(): string
     {
-        if ($this->normalGame() && $this->notAdvantage()) {
+        if ($this->isAGameWithoutAdvantage()) {
             $scorePlayerOne = self::SCORING_SYSTEM[$this->playerOneScore];
             $scorePlayerTwo = self::SCORING_SYSTEM[$this->playerTwoScore];
 
@@ -60,16 +61,6 @@ class TennisGame3 implements TennisGame
         return $this->playerOneScore === $this->playerTwoScore;
     }
 
-    private function normalGame(): bool
-    {
-        return $this->playerOneScore < $this->firstScores() && $this->playerTwoScore < $this->firstScores();
-    }
-
-    private function notAdvantage(): bool
-    {
-        return ($this->playerOneScore + $this->playerTwoScore) !== 6;
-    }
-
     private function winningPlayerName(): string
     {
         if ($this->playerOneScore > $this->playerTwoScore) {
@@ -92,5 +83,12 @@ class TennisGame3 implements TennisGame
     private function scoreFormat(string $scoreOne, string $scoreTwo): string
     {
         return sprintf(self::SCORE_FORMAT, $scoreOne, $scoreTwo);
+    }
+
+    private function isAGameWithoutAdvantage(): bool
+    {
+        return $this->playerOneScore < $this->firstScores() &&
+            $this->playerTwoScore < $this->firstScores() &&
+            ($this->playerOneScore + $this->playerTwoScore) !== self::ADVANTAGE_LIMIT;
     }
 }

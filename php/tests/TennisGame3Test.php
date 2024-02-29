@@ -24,6 +24,7 @@ class TennisGame3Test extends TestMaster
     {
         $playerOneName = 'Rafa Nadal';
         $this->game = new TennisGame3($playerOneName, 'Antonio Federer');
+
         $this->game->wonPoint($playerOneName);
 
         $this->assertSame("Fifteen-Love", $this->game->getScore());
@@ -32,9 +33,10 @@ class TennisGame3Test extends TestMaster
     public function test_ball_boys_cannot_wins(): void
     {
         $playerOneName = 'Rafa Nadal';
-        $ballBoys = 'Little Timmy';
+        $ballBoy = 'Little Timmy';
         $this->game = new TennisGame3($playerOneName, 'Antonio Federer');
-        $this->game->wonPoint($ballBoys);
+
+        $this->game->wonPoint($ballBoy);
 
         $this->assertSame("Love-All", $this->game->getScore());
     }
