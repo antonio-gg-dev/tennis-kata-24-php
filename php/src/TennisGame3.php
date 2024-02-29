@@ -6,10 +6,13 @@ namespace TennisGame;
 
 class TennisGame3 implements TennisGame
 {
-    const SCORING_SYSTEM = ['Love', 'Fifteen', 'Thirty', 'Forty'];
-    private int $playerTwoScore = 0;
+    private const SCORING_SYSTEM = ['Love', 'Fifteen', 'Thirty', 'Forty'];
+    private const DEUCE = 'Deuce';
+    private const ALL = "All";
+    const SCORE_FORMAT = '%s-%s';
 
     private int $playerOneScore = 0;
+    private int $playerTwoScore = 0;
 
     public function __construct(
         private string $playerOneName,
@@ -22,15 +25,23 @@ class TennisGame3 implements TennisGame
         if ($this->normalGame() && $this->notAdvantage()) {
             $scorePlayerOne = self::SCORING_SYSTEM[$this->playerOneScore];
             $scorePlayerTwo = self::SCORING_SYSTEM[$this->playerTwoScore];
-            return ($this->isDeuce()) ? "{$scorePlayerOne}-All" : "{$scorePlayerOne}-{$scorePlayerTwo}";
+
+            if (($this->isDeuce())) {
+                return $this->scoreFormat($scorePlayerOne, self::ALL);
+            }
+
+            return $this->scoreFormat($scorePlayerOne, $scorePlayerTwo);
         }
+
         if ($this->isDeuce()) {
-            return 'Deuce';
+            return self::DEUCE;
         }
-        $winnerPlayer = $this->winningPlayer();
-        return (
-            $this->hasAdvantageOfOne() ?
-            "Advantage {$winnerPlayer}" : "Win for {$winnerPlayer}");
+
+        if ($this->hasAdvantageOfOne()) {
+            return sprintf("Advantage %s", $this->winningPlayerName());
+        }
+
+        return sprintf("Win for %s", $this->winningPlayerName());
     }
 
     public function wonPoint(string $playerName): void
@@ -42,40 +53,42 @@ class TennisGame3 implements TennisGame
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isDeuce(): bool
+    private function isDeuce(): bool
     {
         return $this->playerOneScore === $this->playerTwoScore;
     }
 
-    /**
-     * @return bool
-     */
-    public function normalGame(): bool
+    private function normalGame(): bool
     {
-        return $this->playerOneScore < 4 && $this->playerTwoScore < 4;
+        return $this->playerOneScore < $this->firstScores() && $this->playerTwoScore < $this->firstScores();
     }
 
-    /**
-     * @return bool
-     */
-    public function notAdvantage(): bool
+    private function notAdvantage(): bool
     {
-        return !($this->playerOneScore + $this->playerTwoScore === 6);
+        return ($this->playerOneScore + $this->playerTwoScore) !== 6;
     }
 
-    /**
-     * @return string
-     */
-    public function winningPlayer(): string
+    private function winningPlayerName(): string
     {
-        return $this->playerOneScore > $this->playerTwoScore ? $this->playerOneName : $this->playerTwoName;
+        if ($this->playerOneScore > $this->playerTwoScore) {
+            return $this->playerOneName;
+        }
+
+        return $this->playerTwoName;
     }
 
-    public function hasAdvantageOfOne(): bool
+    private function hasAdvantageOfOne(): bool
     {
         return abs($this->playerOneScore - $this->playerTwoScore) === 1;
+    }
+
+    private function firstScores(): int
+    {
+        return count(self::SCORING_SYSTEM);
+    }
+
+    private function scoreFormat(string $scoreOne, string $scoreTwo): string
+    {
+        return sprintf(self::SCORE_FORMAT, $scoreOne, $scoreTwo);
     }
 }
